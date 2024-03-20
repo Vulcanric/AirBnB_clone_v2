@@ -42,6 +42,9 @@ class HBNBCommand(cmd.Cmd):
         (Brackets denote optional fields in usage example.)
         """
 
+        # Get storage engine updated before continuing with commands parsing
+        storage.reload()
+
         _cmd = _cls = _id = _args = ''  # initialize line elements
 
         # scan for general formating - i.e '.', '(', ')'
@@ -144,9 +147,9 @@ class HBNBCommand(cmd.Cmd):
                     value = int(value)
                 arguments[key] = value
             new_instance = HBNBCommand.classes[class_name](**arguments)
-            storage.save()
+            new_instance.save()
             print(new_instance.id)
-            storage.save()
+            # storage.save()
         except Exception as e:
             pass
 

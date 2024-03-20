@@ -19,6 +19,7 @@ class FileStorage:
                     cls_objects[key] = obj
             return cls_objects
         else:
+            print(all_objects)
             return all_objects
 
     def new(self, obj):
