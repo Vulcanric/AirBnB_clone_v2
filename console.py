@@ -121,42 +121,54 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        arg_list = args.split(" ")
-        class_name = arg_list[0]
-        if not class_name:
-            print("** class name missing **")
-            return
-        elif class_name not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        parameters = arg_list[1:]
+        arg_list = args.split(' ')
+        cls_name = parameters = ''
         try:
-            arguments = {}
-            for param in parameters:
-                param = param.split("=")
-                key = param[0]
-                value = param[1]
-                value = value.strip('"')  # removes trailing double quotes
-                if '"' in value and value.index('"') > 0:
-                    value = value.replace('"', '\"')
-                if "_" in value:
-                    value = value.replace("_", " ")
-                if "." in value and value.replace(".", "").isdigit():
-                    value = float(value)
-                elif "." not in value and value.isdigit():
-                    value = int(value)
-                arguments[key] = value
-            new_instance = HBNBCommand.classes[class_name](**arguments)
-            new_instance.save()
-            storage.save()
-            print(new_instance.id)
-        except Exception as e:
+            cls_name = arg_list[0]
+            parameters = arg_list[1:]
+        except:
             pass
+
+        if not cls_name:
+            print("** class name missing **")
+        elif cls_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+        else:
+            attributes = {}
+            try:
+                for param in parameters:
+                    param = param.split('=')
+                    param_key = param[0]
+                    value = param[1]
+                    value = value.strip('"')  # Remove trailing quotes
+                    if '"' in value and value.index('"') > 0:
+                        value = value.replace('"', '\"')
+                    if '_' in value:
+                        value = value.replace('_', ' ')
+                    if '.' in value:      # Float
+                        isfloat = True
+                        for n in value.split('.'):
+                            if not n.isdigit():
+                                isfloat = False
+                        if isfloat:
+                            value = float(value)
+                    elif value.isdigit():  # Number
+                        value = int(value)
+                    else:                  # String
+                        pass
+                    attributes.update({param_key: value})
+            except:
+                pass
+            # Creating the instance
+            instance = globals()[cls_name](**attributes)
+            instance.save()
+            print(instance.id)
 
     def help_create(self):
         """ Help information for the create method """
-        print("Creates a class of any type")
-        print("[Usage]: create <className>\n")
+        print("Creates an instance of any class")
+        print("[Usage]: create <className> [<param 1> <param 2> <param 3>...]")
+        print('WHERE: param n -> <key name>=<"value">\n')
 
     def do_show(self, args):
         """ Method to show an individual object """
