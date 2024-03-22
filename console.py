@@ -126,7 +126,7 @@ class HBNBCommand(cmd.Cmd):
         try:
             cls_name = arg_list[0]
             parameters = arg_list[1:]
-        except:
+        except Exception:
             pass
 
         if not cls_name:
@@ -157,7 +157,7 @@ class HBNBCommand(cmd.Cmd):
                     else:                  # String
                         pass
                     attributes.update({param_key: value})
-            except:
+            except Exception:
                 pass
             # Creating the instance
             instance = globals()[cls_name](**attributes)
